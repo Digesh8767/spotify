@@ -8,6 +8,8 @@ abstract class AuthFirebaseService {
   Future<Either> signup(CreateUserRequest createUserRequest);
 
   Future<Either> signin(SigninUserReq signinUserReq);
+
+  Future<bool> isLoggedIn();
 }
 
 class AuthFirebaseServiceImpl extends AuthFirebaseService {
@@ -55,5 +57,10 @@ class AuthFirebaseServiceImpl extends AuthFirebaseService {
       }
       return Left(message);
     }
+  }
+
+  @override
+  Future<bool> isLoggedIn() async {
+    return FirebaseAuth.instance.currentUser != null;
   }
 }
