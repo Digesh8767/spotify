@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
+import 'package:spotify/common/helper/cover_matcher.dart';
 import 'package:spotify/data/models/song/song.dart';
 import 'package:spotify/domain/entites/song/song.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -50,13 +51,22 @@ class SongFirebaseServiceImpl extends SongFirebaseService {
 
         String title = songData['title'] ?? '';
         String artist = songData['artist'] ?? '';
-        dynamic duration =
+        dynamic durationField =
             songData['duration'] ?? 180; // Get real duration from Firebase
+
+        num duration;
+
+        if (durationField is String) {
+          duration = double.tryParse(durationField) ?? 180.0;
+        } else if (durationField is num) {
+          duration = durationField;
+        } else {
+          duration = 180;
+        }
         Timestamp releaseDate = songData['releaseDate'] ?? Timestamp.now();
 
         // Match cover URL
-        String searchKey = '$artist , $title';
-        String coverUrl = coverUrls[searchKey] ?? '';
+        String coverUrl = CoverMatcher.matchCoverUrl(title, artist, coverUrls);
 
         print('🎵 Song: $artist - $title');
         print('⏱️ Duration: ${duration}s');

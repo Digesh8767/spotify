@@ -19,7 +19,9 @@ class SongModel {
   SongModel.fromJson(Map<String, dynamic> data) {
     title = data['title'];
     artist = data['artist'];
-    duration = data['duration'];
+    duration = data['duration'] is String
+        ? double.tryParse(data['duration']) ?? 0.0
+        : data['duration'];
     releaseData = data['releaseData'];
     coverUrl = data['coverUrl'] ?? '';
   }

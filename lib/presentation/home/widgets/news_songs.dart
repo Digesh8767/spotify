@@ -46,24 +46,30 @@ class NewsSongs extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              FutureBuilder(
-                future: precacheImage(
-                  NetworkImage(songs[index].coverUrl),
-                  context,
-                ),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return Expanded(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          image: DecorationImage(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(songs[index].coverUrl),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: NetworkImage(songs[index].coverUrl),
+                    ),
+                  ),
+                  child:
+                      songs[index].coverUrl.isEmpty ||
+                          Uri.tryParse(
+                                songs[index].coverUrl,
+                              )?.hasAbsolutePath !=
+                              true
+                      ? const Center(
+                          child: Icon(
+                            Icons.music_note,
+                            size: 50,
+                            color: AppColors.primary,
                           ),
-                        ),
-                        child: Align(
-                          alignment: AlignmentGeometry.bottomRight,
+                        )
+                      : Align(
+                          alignment: Alignment.bottomRight,
                           child: Container(
                             height: 40,
                             width: 40,
@@ -80,11 +86,7 @@ class NewsSongs extends StatelessWidget {
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  }
-                  return const Center(child: CircularProgressIndicator());
-                },
+                ),
               ),
               const SizedBox(height: 8),
               Text(
